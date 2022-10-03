@@ -30,9 +30,7 @@ const options = {
     } else {
         buttonRef.disabled = false
     }
-    if(delta < 1000) {
-    timer.stop();
-    }
+    
     },
 };
 
@@ -52,7 +50,9 @@ const timer = {
     this.intervalId = setInterval(() => {
         const currentTime = Date.now();
         const deltaTime = startTime - currentTime
-    
+        if(deltaTime < 1000) {
+            timer.stop();
+            }
         const { days, hours, minutes, seconds } = convertMs(deltaTime)
         updateClock({ days, hours, minutes, seconds });
         // if(days === String(00) && hours === String(00) && minutes === String(00) && seconds === String(00)) {
@@ -62,15 +62,15 @@ const timer = {
         
     },
     stop() {
-        clearInterval(intervalId);
+        clearInterval(this.intervalId);
         this.isActive = false;
     }
 }
-buttonRef.addEventListener('click', onClick);
+buttonRef.addEventListener('click', timer.start.bind(timer));
 
-function onClick() {
-    timer.start();
-}
+// function onClick() {
+//     timer.start();
+// }
 
 function convertMs(ms) {
     // Number of milliseconds per unit of time
